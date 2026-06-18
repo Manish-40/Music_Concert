@@ -147,9 +147,9 @@ async function syncBookedSeatsFromServer() {
   if (!THEATER_KEY) return;
 
   try {
-
+const API_URL = "https://music-concert.onrender.com";
     const response = await fetch(
-      `http://localhost:5001/api/booked-seats/${THEATER_KEY}`
+      `${API_URL}/api/booked-seats/${THEATER_KEY}`
     );
 
     if (!response.ok) return;

@@ -69,9 +69,9 @@
       initSeatSelection("seatingBlocks");
 
       try {
-
+const API_URL = "https://music-concert.onrender.com";
         const response = await fetch(
-          "http://localhost:5001/api/booked-seats/mini"
+          `${API_URL}/api/booked-seats/mini`
         );
 
         const bookedSeats = await response.json();

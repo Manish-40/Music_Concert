@@ -37,11 +37,12 @@
         password,
       };
     }
+    const API_URL = "https://music-concert.onrender.com";
 
     const endpoint =
       mode === "register"
-        ? "http://localhost:5001/api/register"
-        : "http://localhost:5001/api/login";
+        ? `${API_URL}/api/register`
+        : `${API_URL}/api/login`;
 
     try {
       statusEl.textContent = "Please wait...";

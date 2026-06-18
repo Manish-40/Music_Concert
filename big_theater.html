@@ -36,7 +36,7 @@
     <span class="booking-total" id="bookingTotal">₹0</span>
     <button class="btn" id="bookBtn" disabled>Book ticket</button>
   </div>
-<script>
+  <script>
     window.THEATER_KEY = "big";
     window.SEAT_PRICE = 499;
   </script>
@@ -81,9 +81,9 @@
       initSeatSelection("seatingBlocks");
 
       try {
-
+        const API_URL = "https://music-concert.onrender.com";
         const response = await fetch(
-          "http://localhost:5001/api/booked-seats/big"
+          `${API_URL}/api/booked-seats/big`
         );
 
         const bookedSeats = await response.json();
@@ -109,7 +109,7 @@
 
     initializeTheater();
   </script>
-  
+
 </body>
 
 </html>

@@ -102,8 +102,9 @@
     statusEl.textContent = "Submitting payment...";
 
     try {
+      const API_URL = "https://music-concert.onrender.com";
       const response = await fetch(
-        "http://localhost:5001/api/book-ticket",
+        `${API_URL}/api/book-ticket`,
         {
           method: "POST",
           headers: {
