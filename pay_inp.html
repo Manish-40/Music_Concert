@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Upload | Antra Music</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 24px;
+            background: #111;
+            color: #f4ead8;
+        }
+
+        .page-shell {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .payment-card {
+            background: #1b1511;
+            border: 1px solid rgba(244, 234, 216, 0.12);
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 18px;
+        }
+
+        .ticket-summary {
+            display: grid;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .ticket-summary strong {
+            color: #d9b35f;
+        }
+
+        .notice {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(212, 104, 59, 0.16);
+            border: 1px solid rgba(212, 104, 59, 0.35);
+            color: #ffe6d4;
+            line-height: 1.5;
+        }
+
+        form {
+            max-width: 420px;
+            margin-top: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        label {
+            display: grid;
+            gap: 6px;
+        }
+
+        input,
+        button {
+            margin-bottom: 0;
+        }
+
+        .responsive-image {
+            width: min(100%, 420px);
+            height: auto;
+            display: block;
+            border-radius: 16px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 999px;
+            background: #d4683b;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .status {
+            min-height: 24px;
+            color: #d9b35f;
+        }
+
+        .auth-links a {
+            color: #d9b35f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-shell">
+        <h1>Complete Payment Upload</h1>
+        <p>Upload your payment screenshot after confirming the selected ticket seats.</p>
+        <div class="notice">
+            Seats are confirmed only after payment screenshot review by our team.
+            This is first come, first served for the selected theater.
+        </div>
+
+        </p>
+        <p class="auth-links" id="authLinks">
+            Need an account?
+            <a href="login.html">Login</a> or
+            <a href="register.html">Register</a>
+        </p>
+
+        <p id="userInfo" style="display:none;"></p>
+        <img src="download.jpg" alt="Payment QR code" class="responsive-image">
+
+        <div class="payment-card">
+            <h2>Ticket summary</h2>
+            <div class="ticket-summary">
+                <div><strong>Theater:</strong> <span id="summaryTheater">unknown</span></div>
+                <div><strong>Seats:</strong> <span id="summarySeats">None selected</span></div>
+                <div><strong>Price per seat:</strong> <span id="summaryPrice">₹0</span></div>
+                <div><strong>Total:</strong> <span id="summaryTotal">₹0</span></div>
+            </div>
+
+            <form id="bookingForm" enctype="multipart/form-data">
+                <input type="hidden" id="selectedSeats" name="selectedSeats">
+                <input type="hidden" id="bookingTotal" name="ticketTotal">
+                <input type="hidden" id="bookingTheater" name="theater">
+
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="contactNumber">Contact Number:</label>
+                <input type="tel" id="contactNumber" name="contactNumber" required>
+
+                <label for="image">Payment screenshot:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+
+                <button type="submit">Submit payment</button>
+            </form>
+            <p class="status" id="bookingStatus" aria-live="polite"></p>
+        </div>
+    </div>
+
+    <script src="booking-form.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,220 @@
+/* =========================================================
+   SEAT MAP — shared styles for big & mini theater layouts
+   ========================================================= */
+:root{
+  --umber: #1A1410;
+  --umber-soft: #241D17;
+  --parchment: #F2E9D8;
+  --parchment-dim: #cfc3ab;
+  --amber: #D4683B;
+  --brass: #C9A227;
+  --seat-size: 26px;
+  --seat-gap: 4px;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  background: var(--umber);
+  color: var(--parchment);
+  font-family: 'Inter', system-ui, sans-serif;
+  padding-bottom: 140px; /* room for the sticky booking bar */
+}
+
+.stage-banner{
+  text-align: center;
+  padding: 22px 16px 18px;
+  background: linear-gradient(180deg, rgba(212,104,59,.12), transparent);
+}
+.stage-banner h1{
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--parchment-dim);
+  font-weight: 500;
+}
+.stage-shape{
+  margin: 0 auto;
+  width: min(70%, 520px);
+  height: 10px;
+  background: var(--brass);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow: 0 0 30px 6px rgba(201,162,39,.35);
+}
+.stage-label{
+  margin-top: 8px;
+  font-size: .72rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--brass);
+  opacity: .8;
+}
+
+.theater-name{
+  text-align: center;
+  font-size: .85rem;
+  color: var(--parchment-dim);
+  margin: 0 0 18px;
+}
+
+/* ---------- seating layout ---------- */
+.seating-wrap{
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.seating-blocks{
+  display: flex;
+  justify-content: center;
+  gap: clamp(20px, 4vw, 64px);
+  align-items: flex-start;
+  min-width: max-content;
+  margin: 0 auto;
+  padding: 0 8px 8px;
+}
+
+.block{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.block-label{
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--parchment-dim);
+  opacity: .75;
+}
+
+.rows{
+  display: flex;
+  flex-direction: column;
+  gap: var(--seat-gap);
+}
+.row{
+  display: flex;
+  gap: var(--seat-gap);
+  justify-content: center;
+}
+.row-gap{ height: 22px; }
+
+.seat{
+  width: var(--seat-size);
+  height: var(--seat-size);
+  border: 1px solid rgba(242,233,216,.35);
+  border-radius: 5px 5px 2px 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .62rem;
+  color: var(--parchment-dim);
+  cursor: pointer;
+  background: rgba(242,233,216,.04);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  flex-shrink: 0;
+  user-select: none;
+}
+.seat:hover{ transform: translateY(-2px); border-color: var(--amber); }
+
+.seat.selected{
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--umber);
+}
+.seat.taken,
+.seat.booked{
+  background: rgba(242,233,216,.08);
+  border-color: rgba(242,233,216,.12);
+  color: rgba(242,233,216,.25);
+  cursor: not-allowed;
+}
+.seat.taken:hover,
+.seat.booked:hover{ transform: none; border-color: rgba(242,233,216,.12); }
+
+/* ---------- legend ---------- */
+.legend{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px;
+  margin: 28px auto 0;
+  font-size: .78rem;
+  color: var(--parchment-dim);
+}
+.legend-item{ display: flex; align-items: center; gap: 8px; }
+.legend-swatch{
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 1px solid rgba(242,233,216,.35);
+}
+.legend-swatch.available{ background: rgba(242,233,216,.04); }
+.legend-swatch.selected{ background: var(--amber); border-color: var(--amber); }
+.legend-swatch.taken,
+.legend-swatch.booked{ background: rgba(242,233,216,.08); border-color: rgba(242,233,216,.12); }
+
+/* ---------- sticky booking bar ---------- */
+.booking-bar{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--umber-soft);
+  border-top: 1px solid rgba(242,233,216,.12);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  z-index: 50;
+}
+.booking-info{ display: flex; flex-direction: column; gap: 2px; }
+.booking-count{ font-weight: 600; }
+.booking-seats{ font-size: .8rem; color: var(--parchment-dim); max-width: 60vw; }
+.booking-total{ font-weight: 700; color: var(--brass); }
+
+.btn{
+  display: inline-block;
+  padding: 12px 26px;
+  background-color: var(--amber);
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.btn:hover{ background-color: #b8552d; }
+.btn:disabled{ background: rgba(242,233,216,.15); color: rgba(242,233,216,.4); cursor: not-allowed; }
+
+.back-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 16px 16px 0;
+  font-size: .85rem;
+  color: var(--parchment-dim);
+  text-decoration: none;
+}
+.back-link:hover{ color: var(--parchment); }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 980px){
+  :root{ --seat-size: 22px; --seat-gap: 3px; }
+  .seating-blocks{ gap: 26px; }
+}
+
+@media (max-width: 640px){
+  :root{ --seat-size: 18px; --seat-gap: 3px; }
+  .seating-blocks{ gap: 16px; }
+  .seat{ font-size: .55rem; }
+  .booking-bar{ flex-direction: column; align-items: stretch; text-align: center; }
+  .booking-seats{ max-width: 100%; }
+  .btn{ width: 100%; text-align: center; }
+}

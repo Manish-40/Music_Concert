@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Seats — Big Auditorium | Antra Music</title>
+  <link rel="stylesheet" href="seat-map.css">
+</head>
+
+<body>
+
+  <a href="index.html" class="back-link">&larr; Back to shows</a>
+
+  <div class="stage-banner">
+    <h1>Kashinath Ghanekar — Big Auditorium</h1>
+    <div class="stage-shape"></div>
+    <div class="stage-label">Stage</div>
+  </div>
+
+  <div class="seating-wrap">
+    <div class="seating-blocks" id="seatingBlocks"></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch available"></span> Available</div>
+    <div class="legend-item"><span class="legend-swatch selected"></span> Selected</div>
+    <div class="legend-item"><span class="legend-swatch booked"></span> Booked</div>
+  </div>
+
+  <div class="booking-bar">
+    <div class="booking-info">
+      <span class="booking-count" id="bookingCount">No seats selected</span>
+      <span class="booking-seats" id="bookingSeats"></span>
+    </div>
+    <span class="booking-total" id="bookingTotal">₹0</span>
+    <button class="btn" id="bookBtn" disabled>Book ticket</button>
+  </div>
+<script>
+    window.THEATER_KEY = "big";
+    window.SEAT_PRICE = 499;
+  </script>
+
+  <script src="seat-map.js"></script>
+  <script>
+
+    // Left block
+    const leftBlock = {
+      label: "Left",
+      rowGroups: [
+        { columns: [6, 6, 7, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12] },
+        { gapAfter: "before", columns: [12, 12, 12, 12, 12] }
+      ]
+    };
+
+    // Center block
+    const centerBlock = {
+      label: "Center",
+      rowGroups: [
+        { columns: [16, 17, 16, 17, 16, 17, 16, 17, 16, 17, 16, 17, 16, 17, 16] },
+        { gapAfter: "before", columns: [17, 16, 17, 16, 17] }
+      ]
+    };
+
+    // Right block
+    const rightBlock = {
+      label: "Right",
+      rowGroups: [
+        { columns: [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 11] },
+        { gapAfter: "before", columns: [12, 12, 12, 12, 12] }
+      ]
+    };
+
+    async function initializeTheater() {
+
+      renderSeatMap(
+        [leftBlock, centerBlock, rightBlock],
+        "seatingBlocks"
+      );
+
+      initSeatSelection("seatingBlocks");
+
+      try {
+
+        const response = await fetch(
+          "http://localhost:5001/api/booked-seats/big"
+        );
+
+        const bookedSeats = await response.json();
+
+        bookedSeats.forEach((seat) => {
+
+          const seatElement = document.querySelector(
+            `[data-seat="${seat.seat_number}"]`
+          );
+
+          if (seatElement) {
+            seatElement.classList.add("booked");
+            seatElement.disabled = true;
+          }
+
+        });
+
+      } catch (error) {
+        console.error("Failed to load booked seats:", error);
+      }
+
+    }
+
+    initializeTheater();
+  </script>
+  
+</body>
+
+</html>

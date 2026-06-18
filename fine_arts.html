@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine Arts Seating Layout</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: grey;
+            color: #fff;
+            padding-bottom: 50px;
+        }
+
+        .stage-container {
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        .stage-title {
+            background: #333;
+            padding: 10px 0;
+            border-radius: 4px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Layout Container */
+        .seating-wrapper {
+            margin-top: 40px;
+        }
+
+        .auditorium-column {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .column-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+            width: 100%;
+        }
+
+        /* Flexbox for Seat Rows */
+        .seat-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .seat-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 6px;
+            width: 100%;
+            flex-wrap: nowrap; /* Keep seats in one horizontal line */
+        }
+
+        /* Responsive Seats */
+        .seat {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #000;
+            background-color: #fff;
+            color: #000;
+            margin: 2px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 11px;
+            border-radius: 4px;
+            user-select: none;
+            transition: all 0.2s ease;
+            flex-shrink: 1;
+        }
+
+        /* Adjust sizing for extra-small screens to prevent overflow */
+        @media(max-width: 576px) {
+            .seat {
+                width: 20px;
+                height: 20px;
+                font-size: 8px;
+                margin: 1px;
+            }
+        }
+
+        .seat:hover {
+            background-color: #ddd;
+        }
+
+        .seat.selected {
+            background-color: skyblue;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        .btn-custom {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 stage-container">
+                <h3 class="stage-title">Stage</h3>
+                <hr class="bg-light">
+            </div>
+        </div>
+
+        <div class="container seating-wrapper">
+            <div class="row">
+                
+                <div class="col-lg-4 col-md-12">
+                    <div class="auditorium-column">
+                        <div class="column-title">Left Wing</div>
+                        
+                        <div class="seat-section">
+                            <div id="left-block-1"></div>
+                        </div>
+
+                        <div class="seat-section">
+                            <div id="left-block-2"></div>
+                        </div>
+
+                        <div class="seat-section">
+                            <div id="left-block-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <div class="auditorium-column">
+                        <div class="column-title">Center Wing</div>
+                        
+                        <div class="seat-section">
+                            <div id="center-block-1"></div>
+                        </div>
+
+                        <div class="seat-section">
+                            <div id="center-block-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <div class="auditorium-column">
+                        <div class="column-title">Right Wing</div>
+                        
+                        <div class="seat-section">
+                            <div id="right-block-1"></div>
+                        </div>
+
+                        <div class="seat-section">
+                            <div id="right-block-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-center">
+                <a href="new_page.html" class="btn-custom" target="_blank">Proceed to Balcony</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Definition layout map copied precisely from PHP logic
+        const layoutConfigs = [
+            { targetId: 'left-block-1', columns: [7, 8, 8, 9, 9, 10, 10, 11] },
+            { targetId: 'left-block-2', columns: [11, 10, 10, 9, 9, 8, 8, 7] },
+            { targetId: 'left-block-3', columns: [15] },
+            
+            { targetId: 'center-block-1', columns: [5, 6, 6, 7, 7, 8, 8, 9, 9] },
+            { targetId: 'center-block-2', columns: [10, 10, 11, 12, 12, 13, 13, 14, 13] },
+            
+            { targetId: 'right-block-1', columns: [6, 7, 8, 9, 10, 11, 11, 11] },
+            { targetId: 'right-block-2', columns: [12, 13, 14, 15, 15, 6, 5, 4, 4, 4] }
+        ];
+
+        // Generate structural HTML elements and sequential seat numbering
+        layoutConfigs.forEach(config => {
+            const element = document.getElementById(config.targetId);
+            let seatNumber = 1; // Resets per block exactly like the PHP counter loops
+            
+            config.columns.forEach(colCount => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'seat-row';
+                
+                for (let j = 0; j < colCount; j++) {
+                    const seatDiv = document.createElement('div');
+                    seatDiv.className = 'seat';
+                    seatDiv.innerText = seatNumber;
+                    
+                    // Toggle selections natively in modern vanilla JS
+                    seatDiv.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                    });
+                    
+                    rowDiv.appendChild(seatDiv);
+                    seatNumber++;
+                }
+                element.appendChild(rowDiv);
+            });
+        });
+    </script>
+</body>
+</html>
