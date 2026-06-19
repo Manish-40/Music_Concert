@@ -1,21 +1,25 @@
 (function () {
   const form = document.getElementById("authForm");
-
   if (!form) return;
 
   const mode = form.dataset.mode;
   const statusEl = document.getElementById("authStatus");
 
+  const API_URL = window.__APP_BASE_URL__ || window.location.origin;
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
 
     let payload = {};
 
+    /* =========================================================
+       REGISTER MODE
+    ========================================================= */
     if (mode === "register") {
       const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
       const confirmPassword =
         document.getElementById("confirmPassword").value;
 
@@ -29,15 +33,17 @@
         email,
         password,
       };
-    } else {
-      const email = document.getElementById("email").value.trim();
+    }
 
+    /* =========================================================
+       LOGIN MODE
+    ========================================================= */
+    else {
       payload = {
         email,
         password,
       };
     }
-    const API_URL = "https://music-concert.onrender.com";
 
     const endpoint =
       mode === "register"
@@ -63,46 +69,50 @@
 
       console.log("API Response:", data);
 
+      /* =========================================================
+         ADMIN CHECK (FRONTEND ROLE SYSTEM)
+      ========================================================= */
+      const isAdmin =
+        email === "admin@gmail.com" &&
+        password === "Admin@12345";
+
+      const userData = {
+        name: isAdmin
+          ? "Admin"
+          : mode === "register"
+            ? payload.name
+            : data.user?.name,
+
+        email: email,
+
+        role: isAdmin ? "admin" : "user",
+      };
+
+      /* =========================================================
+         STORE SESSION
+      ========================================================= */
       localStorage.setItem("antraToken", data.token);
+      localStorage.setItem("antraUser", JSON.stringify(userData));
 
-      if (mode === "register") {
+      console.log("Stored Token:", localStorage.getItem("antraToken"));
+      console.log("Stored User:", localStorage.getItem("antraUser"));
 
-        localStorage.setItem(
-          "antraUser",
-          JSON.stringify({
-            name: payload.name,
-            email: payload.email,
-          })
-        );
+      /* =========================================================
+         STATUS MESSAGE
+      ========================================================= */
+      statusEl.textContent =
+        mode === "register"
+          ? "Registration successful"
+          : "Login successful";
 
-        statusEl.textContent = "Registration successful";
-
-      } else {
-
-        localStorage.setItem(
-          "antraUser",
-          JSON.stringify({
-            name: data.user.name,
-            email: data.user.email,
-          })
-        );
-
-        statusEl.textContent = "Login successful";
-      }
-
-      console.log(
-        "Stored Token:",
-        localStorage.getItem("antraToken")
-      );
-
-      console.log(
-        "Stored User:",
-        localStorage.getItem("antraUser")
-      );
-
-      // Wait 5 seconds before redirect
+      /* =========================================================
+         REDIRECT LOGIC
+      ========================================================= */
       setTimeout(() => {
+
+        // Admin also goes to homepage first
         window.location.href = "index.html";
+
       }, 1000);
 
     } catch (error) {

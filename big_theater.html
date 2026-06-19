@@ -41,6 +41,7 @@
     window.SEAT_PRICE = 499;
   </script>
 
+  <script src="/config.js"></script>
   <script src="seat-map.js"></script>
   <script>
 
@@ -81,7 +82,7 @@
       initSeatSelection("seatingBlocks");
 
       try {
-        const API_URL = "https://music-concert.onrender.com";
+        const API_URL = window.__APP_BASE_URL__ || window.location.origin;
         const response = await fetch(
           `${API_URL}/api/booked-seats/big`
         );

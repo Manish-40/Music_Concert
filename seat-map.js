@@ -147,7 +147,7 @@ async function syncBookedSeatsFromServer() {
   if (!THEATER_KEY) return;
 
   try {
-    const API_URL = "https://music-concert.onrender.com";
+    const API_URL = window.__APP_BASE_URL__ || window.location.origin;
     const response = await fetch(
       `${API_URL}/api/booked-seats/${THEATER_KEY}`
     );
@@ -295,7 +295,7 @@ document
         pricePerSeat:
           booking.pricePerSeat
       });
-    const API_URL = "https://music-concert.onrender.com";
+    const API_URL = window.__APP_BASE_URL__ || window.location.origin;
     window.location.href =
       `${API_URL}/pay_inp.html?${params.toString()}`;
   });

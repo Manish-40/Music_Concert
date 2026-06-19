@@ -1,0 +1,1 @@
+const base_url = window.__APP_BASE_URL__ || window.location.origin;

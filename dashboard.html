@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Antra Music</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #f4ead8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .card {
+            background: #1b1511;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+
+        h1,
+        h2 {
+            color: #d4683b;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #d4683b;
+            color: white;
+        }
+
+        .danger {
+            background: #c0392b;
+            color: white;
+        }
+
+        .show-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .show-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .show-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .status {
+            margin-top: 15px;
+            color: #f1c40f;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 6px;
+        }
+
+        .logout {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <button id="logoutBtn" class="danger logout">
+                Logout
+            </button>
+
+            <h1>Admin Dashboard</h1>
+
+            <p id="adminName"></p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Add New Show</h2>
+
+            <input id="city" placeholder="City">
+
+            <input id="time" placeholder="10:00 PM">
+
+            <input id="price" placeholder="Price">
+
+
+            <select id="theater">
+                <option value="big_theater.html">Big Theater</option>
+                <option value="mini_theater.html">Mini Theater</option>
+            </select>
+
+            <button id="addShowBtn" class="primary">
+                Add Show
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>All Shows</h2>
+
+            <div id="showsList"></div>
+
+        </div>
+
+        <p id="status" class="status"></p>
+
+    </div>
+
+    <script src="/config.js"></script>
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>

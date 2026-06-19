@@ -29,6 +29,7 @@
 
   const statusEl = document.getElementById("bookingStatus");
   const token = localStorage.getItem("antraToken");
+  const API_URL = window.__APP_BASE_URL__ || window.location.origin;
   const query = new URLSearchParams(window.location.search);
 
   const summary = {
@@ -102,7 +103,6 @@
     statusEl.textContent = "Submitting payment...";
 
     try {
-      const API_URL = "https://music-concert.onrender.com";
       const response = await fetch(
         `${API_URL}/api/book-ticket`,
         {

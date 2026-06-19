@@ -12,6 +12,12 @@ const multer = require("multer");
 const path = require("path");
 const userAuth = require("./middleware/userAuth");
 
+app.get("/config.js", (req, res) => {
+  res.type("application/javascript").send(
+    `window.__APP_BASE_URL__ = ${JSON.stringify(baseUrl)};`
+  );
+});
+
 app.use(express.static(__dirname));
 
 if (!process.env.DATABASE_URL) {
@@ -26,7 +32,6 @@ const pool = new Pool({
   },
 });
 
-app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Server is running");
@@ -153,29 +158,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads/");
-//   },
-
-//   filename: (req, file, cb) => {
-//     cb(
-//       null,
-//       Date.now() + path.extname(file.originalname)
-//     );
-//   }
-// });
-
 // const upload = multer({ storage });
 app.post(
   "/api/book-ticket", userAuth,
   upload.single("image"),
   async (req, res) => {
     try {
-      console.log("REQ.USER =", req.user);
       const user_email = req.user.email;
-      console.log(req.body);
-      console.log(req.file);
 
       const {
         name,
@@ -285,6 +274,136 @@ app.get("/api/booked-seats/:theater", async (req, res) => {
     });
   }
 });
+
+app.post("/api/feedback", userAuth, async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const name = req.user.name;
+    const user_email = req.user.email;
+    await pool.query(`INSERT INTO feedback(name,user_email,rating,comment) VALUES($1,$2,$3,$4)`, [name, user_email, rating, comment]);
+    res.json({
+      success: true,
+      message: "Feedback submitted successfully"
+    });
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Failed to submit feedback"
+    });
+  }
+});
+
+app.delete("/api/admin/delete-show/:id", async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+
+    const showResult = await pool.query(
+      "SELECT theater FROM shows WHERE id = $1",
+      [id]
+    );
+
+    if (showResult.rows.length === 0) {
+      return res.status(404).json({
+        error: "Show not found"
+      });
+    }
+
+    const theater = showResult.rows[0].theater;
+
+    await pool.query(
+      "DELETE FROM bookings WHERE theater = $1",
+      [theater]
+    );
+
+    await pool.query(
+      "DELETE FROM shows WHERE id = $1",
+      [id]
+    );
+
+    res.json({
+      success: true,
+      message: "Show and booked seats deleted"
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: "Failed to delete show"
+    });
+  }
+});
+
+app.post("/api/admin/add-show", async (req, res) => {
+
+  const { city, time, price, theater } = req.body;
+
+  const galleryImages = [
+    "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80",
+    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600&q=80",
+    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80",
+    "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80",
+    "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600&q=80",
+    "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&q=80"
+  ];
+
+  const randomImage =
+    galleryImages[Math.floor(Math.random() * galleryImages.length)];
+
+  try {
+
+    const result = await pool.query(
+      `
+      INSERT INTO shows
+      (city, price, rating, img, theater, show_time)
+      VALUES ($1,$2,$3,$4,$5,$6)
+      RETURNING *
+      `,
+      [
+        city,
+        price,
+        4.0, // default rating
+        randomImage,
+        theater,
+        time
+      ]
+    );
+
+    res.json({
+      message: "Show Added",
+      show: result.rows[0]
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: "Failed to add show"
+    });
+  }
+});
+
+app.get("/api/shows", async (req, res) => {
+  try {
+
+    const result = await pool.query(
+      "SELECT * FROM shows ORDER BY id DESC"
+    );
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Failed to load shows"
+    });
+  }
+});
 async function initDb() {
   try {
     // Test connection
@@ -318,6 +437,28 @@ async function initDb() {
 )
 `);
     console.log("Bookings table checked/created");
+
+    await pool.query(`CREATE TABLE IF NOT EXISTS feedback(
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    user_email TEXT NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+      )`)
+
+    await pool.query(`
+CREATE TABLE IF NOT EXISTS shows (
+    id SERIAL PRIMARY KEY,
+    city VARCHAR(100) NOT NULL,
+    price INTEGER NOT NULL,
+    rating DECIMAL(2,1) DEFAULT 4.0,
+    img TEXT,
+    theater VARCHAR(100) DEFAULT 'big_theater.html',
+    show_time VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+`);
   } catch (error) {
     console.error("Database Error:");
     console.error("Message:", error.message);

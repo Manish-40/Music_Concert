@@ -1,14 +1,93 @@
 // =========================================================
 // DATA — content reused from the original Antra Music site
 // =========================================================
-const shows = [
-  { city: "Chembur", time: "07:00 PM", price: 499, rating: "5.0", img: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&q=80", theater: "big_theater.html" },
-  { city: "Powai", time: "11:00 PM", price: 299, rating: "4.3", img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=500&q=80", theater: "mini_theater.html" },
-  { city: "Nasik", time: "09:00 PM", price: 499, rating: "5.0", img: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&q=80", theater: "big_theater.html" },
-  { city: "Nepal", time: "07:00 PM", price: 299, rating: "5.0", img: "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=500&q=80", theater: "mini_theater.html" },
-  { city: "Bengaluru", time: "03:00 PM", price: 499, rating: "5.0", img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=80", theater: "big_theater.html" },
-  { city: "Mumbai", time: "11:00 PM", price: 299, rating: "5.0", img: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80", theater: "mini_theater.html" }
-];
+const base_url = window.__APP_BASE_URL__ || window.location.origin;
+const ticketGrid = document.getElementById("ticketGrid");
+
+function renderShows(shows) {
+
+  ticketGrid.innerHTML = shows.map(s => `
+    <div class="ticket">
+      <div class="ticket-main">
+
+        <div class="ticket-img"
+          style="background-image:url('${s.img || ""}')">
+        </div>
+
+        <div class="ticket-rating">
+          <i class="fa-solid fa-star"></i>
+          ${s.rating || "4.5"}
+        </div>
+
+        <h3 class="ticket-title">
+          ${s.city}
+        </h3>
+
+        <p class="ticket-sub">
+          Santosh K. &amp; Shashank Kapare
+        </p>
+
+        <div class="ticket-meta">
+          <div>
+            <span>Time</span>
+            ${s.time || ""}
+          </div>
+
+          <div>
+            <span>Doors</span>
+            Open
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ticket-stub">
+
+        <span class="ticket-price">
+          ₹${s.price}
+        </span>
+
+        <button
+          class="ticket-book"
+          data-city="${s.city}"
+          data-theater="${s.theater || ""}">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+
+      </div>
+    </div>
+  `).join("");
+}
+async function loadShows() {
+  try {
+
+    const res = await fetch(`${base_url}/api/shows`);
+
+    const data = await res.json();
+
+    console.log("API Response:", data);
+
+    // If backend returns array directly
+    if (Array.isArray(data)) {
+      renderShows(data);
+    }
+
+    // If backend returns { shows: [...] }
+    else if (Array.isArray(data.shows)) {
+      renderShows(data.shows);
+    }
+
+    else {
+      console.error("Invalid API response:", data);
+    }
+
+  } catch (err) {
+    console.error("Error loading shows:", err);
+  }
+}
+
+
+loadShows();
 
 const galleryImages = [
   { img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80", cap: "Nepal · Sept 2021" },
@@ -31,27 +110,6 @@ const faqs = [
 // =========================================================
 // RENDER: tickets
 // =========================================================
-const ticketGrid = document.getElementById('ticketGrid');
-ticketGrid.innerHTML = shows.map(s => `
-  <div class="ticket">
-    <div class="ticket-main">
-      <div class="ticket-img" style="background-image:url('${s.img}')"></div>
-      <div class="ticket-rating"><i class="fa-solid fa-star"></i> ${s.rating}</div>
-      <h3 class="ticket-title">${s.city}</h3>
-      <p class="ticket-sub">Santosh K. &amp; Shashank Kapare</p>
-      <div class="ticket-meta">
-        <div><span>Time</span>${s.time}</div>
-        <div><span>Doors</span>Open</div>
-      </div>
-    </div>
-    <div class="ticket-stub">
-      <span class="ticket-price">₹${s.price}</span>
-      <button class="ticket-book" aria-label="Book ${s.city} show" data-city="${s.city}" data-theater="${s.theater}">
-        <i class="fa-solid fa-plus"></i>
-      </button>
-    </div>
-  </div>
-`).join('');
 
 ticketGrid.addEventListener('click', (e) => {
   const btn = e.target.closest('.ticket-book');
@@ -61,7 +119,24 @@ ticketGrid.addEventListener('click', (e) => {
     window.location.href = theater;
     return;
   }
+  if (ticketGrid) {
+    ticketGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".ticket-book");
+      if (!btn) return;
 
+      const theater = btn.dataset.theater;
+
+      if (theater) {
+        window.location.href = theater;
+        return;
+      }
+
+      const city = btn.dataset.city;
+
+      document.getElementById("contact")
+        ?.scrollIntoView({ behavior: "smooth" });
+    });
+  }
   const city = btn.dataset.city;
   document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
   const eventField = document.querySelector('input[name="event"]');
@@ -175,19 +250,81 @@ starButtons.forEach((btn) => {
   });
 });
 
-const feedbackForm = document.getElementById('feedbackForm');
-const formStatus = document.getElementById('formStatus');
-feedbackForm.addEventListener('submit', (e) => {
+const feedbackForm = document.getElementById("feedbackForm");
+const formStatus = document.getElementById("formStatus");
+
+feedbackForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (currentRating === 0) {
-    formStatus.textContent = 'Please choose a star rating before posting.';
+
+  const token = localStorage.getItem("antraToken");
+
+  if (!token) {
+    formStatus.textContent = "Please login first.";
     return;
   }
-  formStatus.textContent = 'Thanks for rating us!';
-  feedbackForm.reset();
-  currentRating = 0;
-  ratingValue.value = 0;
-  paintStars(0);
+
+  if (currentRating === 0) {
+    formStatus.textContent =
+      "Please choose a star rating.";
+    return;
+  }
+
+  const comment =
+    document.getElementById("feedbackComment")
+      .value
+      .trim();
+
+  if (!comment) {
+    formStatus.textContent =
+      "Please enter feedback.";
+    return;
+  }
+
+  try {
+
+    formStatus.textContent =
+      "Submitting feedback...";
+
+    const response = await fetch(
+      `${base_url}/api/feedback`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          rating: currentRating,
+          comment: comment
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Feedback failed"
+      );
+    }
+
+    formStatus.textContent =
+      "Feedback submitted successfully!";
+
+    feedbackForm.reset();
+
+    currentRating = 0;
+    ratingValue.value = 0;
+
+    paintStars(0);
+
+  } catch (err) {
+
+    console.error(err);
+
+    formStatus.textContent =
+      err.message;
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -197,29 +334,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const registerLink = document.getElementById("registerLink");
   const userWelcome = document.getElementById("userWelcome");
   const logoutBtn = document.getElementById("logoutBtn");
+  const adminDashboardLink =
+    document.getElementById("adminDashboardLink");
 
   if (user) {
-    if (loginLink) loginLink.style.display = "none";
-    if (registerLink) registerLink.style.display = "none";
 
-    if (userWelcome) {
-      userWelcome.style.display = "inline-block";
-      userWelcome.textContent = `Welcome, ${user.name}`;
+    loginLink.style.display = "none";
+    registerLink.style.display = "none";
+
+    userWelcome.style.display = "inline-block";
+
+    if (user.role === "admin") {
+      userWelcome.textContent = `Welcome Admin: ${user.name}`;
+      userWelcome.style.color = "#D4683B";
+
+      adminDashboardLink.style.display = "inline-block";
+    } else {
+      userWelcome.textContent = `Welcome ${user.name}`;
     }
 
-    if (logoutBtn) {
-      logoutBtn.style.display = "inline-block";
-    }
+    logoutBtn.style.display = "inline-block";
   }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", (e) => {
-      e.preventDefault();
+  logoutBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
 
-      localStorage.removeItem("antraUser");
-      localStorage.removeItem("antraToken");
+    localStorage.removeItem("antraToken");
+    localStorage.removeItem("antraUser");
 
-      window.location.href = "index.html";
-    });
-  }
+    window.location.reload();
+  });
 });
