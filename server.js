@@ -7,16 +7,14 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
-const port = process.env.PORT || 5001;
 const multer = require("multer");
 const path = require("path");
 const userAuth = require("./middleware/userAuth");
+const port = process.env.PORT || 5001;
 
-app.get("/config.js", (req, res) => {
-  res.type("application/javascript").send(
-    `window.__APP_BASE_URL__ = ${JSON.stringify(baseUrl)};`
-  );
-});
+
+
+
 
 app.use(express.static(__dirname));
 
@@ -463,7 +461,7 @@ CREATE TABLE IF NOT EXISTS shows (
     price INTEGER NOT NULL,
     rating DECIMAL(2,1) DEFAULT 4.0,
     img TEXT,
-    theater VARCHAR(100) DEFAULT 'big_theater.html',
+    theater VARCHAR(100) DEFAULT 'big',
     show_time VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )

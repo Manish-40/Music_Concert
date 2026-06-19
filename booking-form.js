@@ -29,7 +29,7 @@
 
   const statusEl = document.getElementById("bookingStatus");
   const token = localStorage.getItem("antraToken");
-  const API_URL = window.__APP_BASE_URL__ || window.location.origin;
+  const API_URL = window.location.origin;
   const query = new URLSearchParams(window.location.search);
 
   const summary = {

@@ -1,5 +1,4 @@
-const API_URL =
-    window.__APP_BASE_URL__ || window.location.origin;
+const API_URL = window.location.origin;
 
 const user =
     JSON.parse(localStorage.getItem("antraUser"));
@@ -84,7 +83,7 @@ async function loadShows() {
       Price: ₹${show.price}<br>
 
       Theater:
-      ${show.theater === "big_theater.html"
+      ${show.theater === "big"
                     ? "🎭 Big Theater"
                     : "🎭 Mini Theater"}
 

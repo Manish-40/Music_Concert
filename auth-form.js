@@ -5,7 +5,7 @@
   const mode = form.dataset.mode;
   const statusEl = document.getElementById("authStatus");
 
-  const API_URL = window.__APP_BASE_URL__ || window.location.origin;
+  const API_URL = window.location.origin;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
