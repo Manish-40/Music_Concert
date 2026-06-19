@@ -313,7 +313,7 @@ app.delete("/api/admin/delete-show/:id", async (req, res) => {
 
     let bookingTheater = showTheater;
 
-    if (showTheater === "Big Theater") {
+    if (showTheater === "big") {
       bookingTheater = "big_theater.html";
     } else if (showTheater === "Mini Theater") {
       bookingTheater = "mini_theater.html";
