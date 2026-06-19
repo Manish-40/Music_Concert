@@ -311,11 +311,19 @@ app.delete("/api/admin/delete-show/:id", async (req, res) => {
       });
     }
 
-    const theater = showResult.rows[0].theater;
+    const showTheater = showResult.rows[0].theater;
 
-    await pool.query(
+    let bookingTheater = showTheater;
+
+    if (showTheater === "Big Theater") {
+      bookingTheater = "big_theater.html";
+    } else if (showTheater === "Mini Theater") {
+      bookingTheater = "mini_theater.html";
+    }
+
+    const bookingDeleteResult = await pool.query(
       "DELETE FROM bookings WHERE theater = $1",
-      [theater]
+      [bookingTheater]
     );
 
     await pool.query(
@@ -325,7 +333,8 @@ app.delete("/api/admin/delete-show/:id", async (req, res) => {
 
     res.json({
       success: true,
-      message: "Show and booked seats deleted"
+      deletedBookings: bookingDeleteResult.rowCount,
+      message: "Show and booked seats deleted successfully"
     });
 
   } catch (err) {
