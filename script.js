@@ -30,7 +30,7 @@ function renderShows(shows) {
         <div class="ticket-meta">
           <div>
             <span>Time</span>
-            ${s.time || ""}
+            ${s.show_time || ""}
           </div>
 
           <div>

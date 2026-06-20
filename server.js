@@ -18,6 +18,22 @@ const port = process.env.PORT || 5001;
 
 app.use(express.static(__dirname));
 
+app.get("/mini", (req, res) => {
+  res.sendFile(path.join(__dirname, "mini_theater.html"));
+});
+
+app.get("/big", (req, res) => {
+  res.sendFile(path.join(__dirname, "big_theater.html"));
+});
+
+app.get("/mini_theater", (req, res) => {
+  res.sendFile(path.join(__dirname, "mini_theater.html"));
+});
+
+app.get("/big_theater", (req, res) => {
+  res.sendFile(path.join(__dirname, "big_theater.html"));
+});
+
 if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL is missing in .env file");
   process.exit(1);
