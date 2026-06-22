@@ -15,6 +15,71 @@ const port = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+
+// ======================================================
+// CREATE TABLES
+// ======================================================
+
+async function initDb() {
+
+  try {
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users1 (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        role VARCHAR(20) DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS shows (
+        id SERIAL PRIMARY KEY,
+        city VARCHAR(100) NOT NULL,
+        price INTEGER NOT NULL,
+        rating DECIMAL(2,1) DEFAULT 4.0,
+        img TEXT,
+        theater VARCHAR(100) NOT NULL,
+        show_time VARCHAR(50),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS bookings (
+        id SERIAL PRIMARY KEY,
+        user_email VARCHAR(255) NOT NULL,
+        theater VARCHAR(100) NOT NULL,
+        seat_number VARCHAR(50) NOT NULL,
+        total_price INTEGER,
+        customer_name VARCHAR(100),
+        contact_number VARCHAR(20),
+        screenshot_url TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS feedback (
+        id SERIAL PRIMARY KEY,
+        user_email VARCHAR(255),
+        rating INTEGER NOT NULL,
+        comment TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("✅ All tables created successfully");
+
+  } catch (err) {
+
+    console.error("❌ Database initialization failed:");
+    console.error(err);
+  }
+}
 // ✅ IMPORTANT: static hosting
 app.use(express.static(__dirname));
 app.use("/uploads", express.static("uploads"));
@@ -332,4 +397,5 @@ app.get("/api/shows", async (req, res) => {
 // ======================================================
 app.listen(port, async () => {
   console.log("Server running on port", port);
+  await initDb();
 });
