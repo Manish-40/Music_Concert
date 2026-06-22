@@ -392,6 +392,36 @@ app.get("/api/shows", async (req, res) => {
   }
 });
 
+
+app.post("/api/feedback", userAuth, async (req, res) => {
+  try {
+
+    const { rating, comment } = req.body;
+
+    await pool.query(
+      `INSERT INTO feedback(user_email,rating,comment)
+       VALUES($1,$2,$3)`,
+      [
+        req.user.email,
+        rating,
+        comment
+      ]
+    );
+
+    res.json({
+      success: true,
+      message: "Feedback submitted"
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: "Feedback failed"
+    });
+  }
+});
 // ======================================================
 // START SERVER
 // ======================================================
